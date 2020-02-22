@@ -1,4 +1,4 @@
-import { Api } from '#src/api';
+import { Api } from '../api';
 
 export type ClassDecoratorFactory = (...args: any[]) => ClassDecorator;
 export type PropertyDecoratorFactory = (...args: any[]) => PropertyDecorator;
@@ -17,16 +17,18 @@ type DecoratorType =
 
 export class EvaluationContext<TApi extends Api> {
   public request: RequestInit;
-  public url: URL;
+  public url!: URL;
 
   public readonly target: TApi;
 
-  public readonly propertyKey?: string | symbol;
+  public readonly args: any[];
 
-  public constructor(target: TApi, propertyKey?: string | symbol) {
-    this.url = new URL('');
+  public readonly propertyKey: string | symbol;
+
+  public constructor(target: TApi, propertyKey: string | symbol, args: any[]) {
     this.request = {};
     this.target = target;
+    this.args = args;
     this.propertyKey = propertyKey;
   }
 
@@ -35,9 +37,14 @@ export class EvaluationContext<TApi extends Api> {
   }
 }
 
-export interface Decorator<T extends DecoratorType> {
-  KEY: string | symbol;
-  decorate: T;
+export abstract class Decorator {
+  public static KEY: string | symbol;
 
-  evaluate<TApi extends Api>(context: EvaluationContext<TApi>): void;
+  public static decorate: DecoratorType = () => {
+    throw new Error('Decorate is not implemented!');
+  };
+
+  public abstract evaluate<TApi extends Api>(
+    context: EvaluationContext<TApi>
+  ): void;
 }

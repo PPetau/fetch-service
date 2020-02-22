@@ -1,18 +1,28 @@
-import {
-  Decorator,
-  ClassDecoratorFactory,
-  EvaluationContext,
-} from 'types/decorator';
-import { Api } from '#src/api';
+import { Decorator, EvaluationContext } from '../type/Decorator';
+import { Api } from '../api';
 
-export class ServiceDecorator implements Decorator<ClassDecoratorFactory> {
-  KEY = Symbol('api:service');
-  public decorate(host: string, port: number): ClassDecorator {
+export class ServiceDecorator extends Decorator {
+  public static KEY = Symbol('api:service');
+
+  public static decorate(host: string): ClassDecorator {
     return (target): void => {
-      console.log(target, host, port);
+      Reflect.defineMetadata(
+        ServiceDecorator.KEY,
+        new ServiceDecorator(host),
+        target
+      );
     };
   }
+
+  protected constructor(private host: string) {
+    super();
+  }
+
   public evaluate<TApi extends Api>(context: EvaluationContext<TApi>): void {
-    console.log(context);
+    context.url = new URL(this.host);
   }
 }
+
+const Service = ServiceDecorator.decorate;
+
+export { Service };

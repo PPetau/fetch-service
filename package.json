@@ -25,7 +25,7 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "fetch-service",
+  "name": "@wf/fetch-service",
   "author": "PPetau",
   "module": "dist/fetch-service.esm.js",
   "devDependencies": {

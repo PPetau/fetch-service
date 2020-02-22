@@ -1,5 +1,9 @@
-import { ClassTransformOptions, plainToClass } from 'class-transformer';
-import { Type } from 'types';
+import {
+  ClassTransformOptions,
+  deserialize,
+  deserializeArray,
+} from 'class-transformer';
+import { TypeOf } from '../';
 
 export class ResponseParser {
   public constructor(private readonly _response: Promise<Response>) {}
@@ -7,14 +11,32 @@ export class ResponseParser {
   public async asJson<T>({
     type,
     options,
-  }: { type?: Type<T>; options?: ClassTransformOptions } = {}): Promise<T> {
+  }: { type?: TypeOf<T>; options?: ClassTransformOptions } = {}): Promise<T> {
     try {
-      const response: T = await this._response.then(r => r.clone().json());
+      const response = await this._response.then(r => r.clone().text());
 
       if (type) {
-        return plainToClass(type, response, options);
+        return deserialize(type, response, options);
       } else {
-        return response;
+        return JSON.parse(response);
+      }
+    } catch (ex) {
+      console.warn(ex);
+      throw ex;
+    }
+  }
+
+  public async asJsonArray<T>({
+    type,
+    options,
+  }: { type?: TypeOf<T>; options?: ClassTransformOptions } = {}): Promise<T[]> {
+    try {
+      const response = await this._response.then(r => r.clone().text());
+
+      if (type) {
+        return deserializeArray(type, response, options);
+      } else {
+        return JSON.parse(response);
       }
     } catch (ex) {
       console.warn(ex);

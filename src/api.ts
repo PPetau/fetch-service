@@ -1,13 +1,13 @@
-import { ResponseParser } from '#types/ResponseParser';
-import { EvaluationContext } from '#types/decorator';
+import { ResponseParser } from './type/ResponseParser';
+import { EvaluationContext, Decorator } from './type/Decorator';
 
-const unwantedKeys = ['design:types', 'design:paramtypes', 'design:returntype'];
+const unwantedKeys = ['design:type', 'design:paramtypes', 'design:returntype'];
 
 const ApiProxy: ProxyHandler<Api> = {
   get(target, propertyKey: string | symbol, receiver) {
-    const classMetadataKeys = Reflect.getMetadataKeys(target).filter(
-      k => !unwantedKeys.includes(k)
-    );
+    const classMetadataKeys = Reflect.getMetadataKeys(
+      target.constructor
+    ).filter(k => !unwantedKeys.includes(k));
     const propertyMetadataKeys = Reflect.getMetadataKeys(
       target,
       propertyKey
@@ -18,12 +18,19 @@ const ApiProxy: ProxyHandler<Api> = {
       return Reflect.get(target, propertyKey, receiver);
 
     return function(this: typeof target, ...args: any[]): Function {
-      const context = new EvaluationContext(target, propertyKey);
+      const context = new EvaluationContext(target, propertyKey, args);
 
-      classMetadataKeys.map(k => Reflect.getMetadata(k, target));
-      propertyMetadataKeys.map(k =>
-        Reflect.getMetadata(k, target, propertyKey)
-      );
+      classMetadataKeys
+        .map<Decorator>(k => Reflect.getMetadata(k, target.constructor))
+        .forEach(d => d.evaluate(context));
+
+      propertyMetadataKeys
+        .map<Decorator>(k => Reflect.getMetadata(k, target, propertyKey))
+        .forEach(d => {
+          if (!Array.isArray(d)) d.evaluate(context);
+        });
+
+      console.log(context);
 
       this.GetResponse = (): ResponseParser =>
         new ResponseParser(fetch(context.buildRequest()));

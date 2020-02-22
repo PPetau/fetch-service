@@ -1,9 +1,8 @@
 {
   "include": ["src", "test", "types"],
   "compilerOptions": {
-    "target": "es5",
+    "target": "esnext",
     "module": "esnext",
-    "lib": ["dom", "esnext"],
     "importHelpers": true,
     "declaration": true,
     "sourceMap": true,
@@ -22,11 +21,7 @@
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "baseUrl": "./",
-    "paths": {
-      "#types/*": ["./types/*"],
-      "#src/*": ["./src/*"]
-    },
     "esModuleInterop": true,
-    "types": ["reflect-metadata"]
+    "types": ["reflect-metadata", "jest"]
   }
 }
