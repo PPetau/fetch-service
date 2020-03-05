@@ -20,7 +20,7 @@ export function Template(
         const value = values[key];
         result.push(value.toString(), strings[i + 1]);
       } catch (ex) {
-        throw new Error(`Missing Param: [${key.length > 0 ? key : '<EMPTY>'}]`);
+        throw new Error(`Missing Param: [${key}]`);
       }
     });
     return result.join('');
