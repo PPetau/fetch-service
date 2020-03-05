@@ -32,13 +32,17 @@ const ApiProxy: ProxyHandler<Api> = {
 
       classMetadataKeys
         .map<Decorator>(k => Reflect.getMetadata(k, target.constructor))
-        .forEach(d => d.evaluate(context));
+        .forEach(d => {
+          if (Array.isArray(d)) d.forEach(e => e.evaluate(context));
+          else d.evaluate(context);
+        });
 
       propertyMetadataKeys
         .map<Decorator>(k => Reflect.getMetadata(k, target, propertyKey))
-        .forEach(d => d.evaluate(context));
-
-      console.log(context);
+        .forEach(d => {
+          if (Array.isArray(d)) d.forEach(e => e.evaluate(context));
+          else d.evaluate(context);
+        });
 
       this.GetResponse = (): ResponseParser =>
         new ResponseParser(fetch(context.buildRequest()));
