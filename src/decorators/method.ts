@@ -1,6 +1,6 @@
 import { Decorator, EvaluationContext } from '../type/Decorator';
 import { Api } from '../api';
-import { UrlTemplate } from '../type/Template';
+import { UrlTemplate, Template } from '../type/Template';
 import { MethodParameterDecorator } from './parameter';
 
 type RequestType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
@@ -10,9 +10,11 @@ class RequestMethodDecorator extends Decorator {
 
   public static decorate(
     type: RequestType,
-    template: UrlTemplate
+    template?: UrlTemplate
   ): MethodDecorator {
     return (target, key): void => {
+      if (!template) template = Template`[SERVICE]/[ACTION]`;
+
       Reflect.defineMetadata(
         RequestMethodDecorator.KEY,
         new RequestMethodDecorator(type, template),
@@ -38,7 +40,10 @@ class RequestMethodDecorator extends Decorator {
       ) as MethodParameterDecorator[]) ?? []
     ).map(p => p.evaluate(context));
 
-    context.url.pathname = this.template(Object.fromEntries(parameters));
+    context.url.pathname = this.template(Object.fromEntries(parameters), {
+      target: context.target,
+      key: context.propertyKey,
+    });
 
     context.request.method = this.type;
   }
@@ -46,23 +51,23 @@ class RequestMethodDecorator extends Decorator {
 
 const Method = RequestMethodDecorator.decorate;
 
-function Get(template: UrlTemplate): ReturnType<typeof Method> {
+function Get(template?: UrlTemplate): ReturnType<typeof Method> {
   return Method('GET', template);
 }
 
-function Post(template: UrlTemplate): ReturnType<typeof Method> {
+function Post(template?: UrlTemplate): ReturnType<typeof Method> {
   return Method('POST', template);
 }
 
-function Put(template: UrlTemplate): ReturnType<typeof Method> {
+function Put(template?: UrlTemplate): ReturnType<typeof Method> {
   return Method('PUT', template);
 }
 
-function Patch(template: UrlTemplate): ReturnType<typeof Method> {
+function Patch(template?: UrlTemplate): ReturnType<typeof Method> {
   return Method('PATCH', template);
 }
 
-function Delete(template: UrlTemplate): ReturnType<typeof Method> {
+function Delete(template?: UrlTemplate): ReturnType<typeof Method> {
   return Method('DELETE', template);
 }
 

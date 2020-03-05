@@ -1,4 +1,5 @@
 import * as Transform from 'class-transformer';
+import { TemplateReplacer } from './type/Template';
 export {
   Service,
   Method,
@@ -16,4 +17,6 @@ export { Template } from './type/Template';
 export { Api } from './api';
 export type TypeOf<T> = { new (...args: unknown[]): T };
 
-export { Transform };
+const defineTemplate = TemplateReplacer.addReplacer;
+
+export { Transform, defineTemplate };

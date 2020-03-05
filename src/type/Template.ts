@@ -1,10 +1,46 @@
 export type UrlTemplate = {
-  (values: Record<string, string | number>): string;
+  (values: Record<string, string | number>, ctx: TemplateContext): string;
   raw: string;
 };
 
+type TemplateContext = {
+  target: object;
+  key: string;
+};
+
+export interface Replacer {
+  regx: RegExp;
+  with: (ctx: TemplateContext) => string;
+}
+
+export const TemplateReplacer = new (class TemplateReplacer {
+  public readonly replacers: Replacer[] = [];
+
+  public constructor() {
+    this.addReplacer({
+      regx: /(\[SERVICE\])/gi,
+      with: ctx => ctx.target.constructor.name,
+    }).addReplacer({
+      regx: /(\[ACTION\])/gi,
+      with: ctx => ctx.key,
+    });
+  }
+
+  public addReplacer(replacer: Replacer): TemplateReplacer {
+    this.replacers.push(replacer);
+
+    return this;
+  }
+
+  public replaceString(str: string, ctx: TemplateContext): string {
+    return this.replacers.reduce((str, replacer) => {
+      return str.replace(replacer.regx, replacer.with(ctx));
+    }, str);
+  }
+})();
+
 export function Template(
-  strings: TemplateStringsArray,
+  stringsArray: TemplateStringsArray,
   ...keys: string[]
 ): UrlTemplate {
   keys.forEach(key => {
@@ -13,7 +49,14 @@ export function Template(
     }
   });
 
-  const returns = (values: Record<string, string | number>): string => {
+  const returns = (
+    values: Record<string, string | number>,
+    ctx: TemplateContext
+  ): string => {
+    const strings = stringsArray.map(str =>
+      TemplateReplacer.replaceString(str, ctx)
+    );
+
     const result = [strings[0]];
     keys.forEach((key, i) => {
       try {
@@ -26,7 +69,7 @@ export function Template(
     return result.join('');
   };
 
-  returns.raw = strings.join('');
+  returns.raw = stringsArray.join('');
 
   return returns;
 }
