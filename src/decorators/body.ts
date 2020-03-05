@@ -38,15 +38,15 @@ export class MethodBodyDecorator extends Decorator {
 
     if (typeof argVal === 'object') {
       context.request.headers = {
-        ...(context.request.headers ?? {}),
         'Content-Type': 'application/json',
+        ...(context.request.headers ?? {}),
       };
 
       context.request.body = serialize(argVal);
     } else if (argVal) {
       context.request.headers = {
-        ...(context.request.headers ?? {}),
         'Content-Type': 'text/plain',
+        ...(context.request.headers ?? {}),
       };
 
       context.request.body = JSON.stringify(argVal);
