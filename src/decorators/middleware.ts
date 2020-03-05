@@ -8,13 +8,33 @@ export interface ApiMiddleware {
 export class MiddlewareDecorator extends Decorator {
   public static KEY = Symbol('api:service');
 
-  public static decorate(middleware: ApiMiddleware): ClassDecorator {
-    return (target): void => {
-      Reflect.defineMetadata(
-        MiddlewareDecorator.KEY,
-        new MiddlewareDecorator(middleware),
-        target
+  public static decorate(...middlewares: ApiMiddleware[]) {
+    return (target: object, propertyKey?: string): void => {
+      const decorators = middlewares.map(
+        middleware => new MiddlewareDecorator(middleware)
       );
+
+      if (typeof propertyKey === 'undefined') {
+        const other: MiddlewareDecorator[] =
+          Reflect.getMetadata(MiddlewareDecorator.KEY, target) ?? [];
+
+        Reflect.defineMetadata(
+          MiddlewareDecorator.KEY,
+          [...decorators, ...other],
+          target
+        );
+      } else {
+        const other: MiddlewareDecorator[] =
+          Reflect.getMetadata(MiddlewareDecorator.KEY, target, propertyKey) ??
+          [];
+
+        Reflect.defineMetadata(
+          MiddlewareDecorator.KEY,
+          [...decorators, ...other],
+          target,
+          propertyKey
+        );
+      }
     };
   }
 

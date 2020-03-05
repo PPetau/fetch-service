@@ -4,3 +4,4 @@ export { Param } from './parameter';
 export { Query } from './query';
 export { Body } from './body';
 export { Header } from './header';
+export { Middleware, ApiMiddleware } from './middleware';
