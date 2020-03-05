@@ -1,4 +1,5 @@
 import { Api } from '../api';
+import { ApiMiddleware } from '../decorators/middleware';
 
 export type ClassDecoratorFactory = (...args: never[]) => ClassDecorator;
 export type PropertyDecoratorFactory = (...args: never[]) => PropertyDecorator;
@@ -27,11 +28,14 @@ export class EvaluationContext {
 
   public readonly propertyKey: string;
 
-  public constructor(target: TApi, propertyKey: string, args: unknown[]) {
+  public middlewares: ApiMiddleware[];
+
+  public constructor(target: Api, propertyKey: string, args: unknown[]) {
     this.request = {};
     this.target = target;
     this.args = args;
     this.propertyKey = propertyKey;
+    this.middlewares = [];
   }
 
   public buildRequest(): Request {

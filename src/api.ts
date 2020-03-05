@@ -44,8 +44,7 @@ const ApiProxy: ProxyHandler<Api> = {
           else d.evaluate(context);
         });
 
-      this.GetResponse = (): ResponseParser =>
-        new ResponseParser(fetch(context.buildRequest()));
+      this.GetResponse = (): ResponseParser => new ResponseParser(context);
 
       return (Reflect.get(target, propertyKey, receiver) as Function).apply(
         this,
