@@ -21,6 +21,6 @@
     "moduleResolution": "node",
     "baseUrl": "./",
     "esModuleInterop": true,
-    "types": ["reflect-metadata", "jest"]
+    "types": ["reflect-metadata", "jest", "node"]
   }
 }

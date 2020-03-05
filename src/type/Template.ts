@@ -20,10 +20,23 @@ export const TemplateReplacer = new (class TemplateReplacer {
     this.addReplacer({
       regx: /(\[SERVICE\])/gi,
       with: ctx => ctx.target.constructor.name,
-    }).addReplacer({
-      regx: /(\[ACTION\])/gi,
-      with: ctx => ctx.key,
-    });
+    })
+      .addReplacer({
+        regx: /(\[ACTION\])/gi,
+        with: ctx => ctx.key,
+      })
+      .addReplacer({
+        regx: /(\[HOST\])/gi,
+        with: () => process.env.API_HOST ?? '',
+      })
+      .addReplacer({
+        regx: /(\[PORT\])/gi,
+        with: () => process.env.API_PORT ?? '',
+      })
+      .addReplacer({
+        regx: /(\[PATH\])/gi,
+        with: () => process.env.API_BASE ?? '',
+      });
   }
 
   public addReplacer(replacer: Replacer): TemplateReplacer {
