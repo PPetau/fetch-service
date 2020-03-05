@@ -19,11 +19,15 @@ export const TemplateReplacer = new (class TemplateReplacer {
   public constructor() {
     this.addReplacer({
       regx: /(\[SERVICE\])/gi,
-      with: ctx => ctx.target.constructor.name,
+      with: ctx => ctx.target.constructor.name.replace(/SERVICE/gi, ''),
     })
       .addReplacer({
         regx: /(\[ACTION\])/gi,
         with: ctx => ctx.key,
+      })
+      .addReplacer({
+        regx: /(\[BASE\])/gi,
+        with: () => '[HOST]:[PORT]/[PATH]',
       })
       .addReplacer({
         regx: /(\[HOST\])/gi,
@@ -46,8 +50,8 @@ export const TemplateReplacer = new (class TemplateReplacer {
   }
 
   public replaceString(str: string, ctx: TemplateContext): string {
-    return this.replacers.reduce((str, replacer) => {
-      return str.replace(replacer.regx, replacer.with(ctx));
+    return this.replacers.reduce((string, replacer) => {
+      return string.replace(replacer.regx, replacer.with(ctx));
     }, str);
   }
 })();
