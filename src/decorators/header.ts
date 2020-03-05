@@ -7,19 +7,26 @@ export class HeadersDecorator {
     headers: Record<string, string>
   ): ClassDecorator | PropertyDecorator {
     return (target: object, propertyKey?: string): void => {
-      if (typeof propertyKey === 'undefined')
+      if (typeof propertyKey === 'undefined') {
+        const other: HeadersDecorator[] =
+          Reflect.getMetadata(HeadersDecorator.KEY, target) ?? [];
+
         Reflect.defineMetadata(
           HeadersDecorator.KEY,
-          new HeadersDecorator(headers),
+          [new HeadersDecorator(headers), ...other],
           target
         );
-      else
+      } else {
+        const other: HeadersDecorator[] =
+          Reflect.getMetadata(HeadersDecorator.KEY, target, propertyKey) ?? [];
+
         Reflect.defineMetadata(
           HeadersDecorator.KEY,
-          new HeadersDecorator(headers),
+          [new HeadersDecorator(headers), ...other],
           target,
           propertyKey
         );
+      }
     };
   }
 
