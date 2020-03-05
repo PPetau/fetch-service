@@ -5,20 +5,19 @@ import { Api } from '../api';
 export class MethodQueryDecorator extends Decorator {
   public static KEY = Symbol('api:method:query');
 
-  public static decorate(): ParameterDecorator {
+  public static decorate(name?: string): ParameterDecorator {
     return (target, key, index): void => {
       const func = Object.getOwnPropertyDescriptor(target, key)?.value;
 
       if (typeof func === 'function') {
-        if (Reflect.hasMetadata(MethodQueryDecorator.KEY, target, key)) {
-          throw Error(
-            'Using more than one Query. Only on Queryparameter is allowed per Method.'
-          );
-        }
+        const otherQuerys: MethodQueryDecorator[] =
+          Reflect.getMetadata(MethodQueryDecorator.KEY, target, key) ?? [];
+
+        if (!name) name = GetArguments(func)[index];
 
         Reflect.defineMetadata(
           MethodQueryDecorator.KEY,
-          new MethodQueryDecorator(index),
+          [new MethodQueryDecorator(name, index), ...otherQuerys],
           target,
           key
         );
@@ -30,36 +29,23 @@ export class MethodQueryDecorator extends Decorator {
     };
   }
 
-  protected constructor(public readonly index: number) {
+  protected constructor(
+    public readonly parameterName: string,
+    public readonly index: number
+  ) {
     super();
   }
 
   public evaluate<TApi extends Api>(context: EvaluationContext<TApi>): void {
-    const argVal = context.args[this.index];
-    let query: Record<string, string> = {};
+    const value = context.args[this.index];
 
-    if (typeof argVal === 'object') {
-      Object.keys(argVal).forEach(key => {
-        if (typeof argVal[key] === 'object') {
-          argVal[key] = JSON.stringify(argVal[key]);
-        }
+    if (typeof value === 'string') {
+      context.url.searchParams.set(this.parameterName, value);
+    } else if (typeof value === 'object' && value !== null) {
+      Object.entries(value).forEach(entry => {
+        context.url.searchParams.set(entry[0], entry[1] as string);
       });
-
-      query = argVal;
-    } else if (typeof argVal !== 'undefined') {
-      const parameterNames = GetArguments(
-        Object.getOwnPropertyDescriptor(context.target, context.propertyKey)
-          ?.value
-      );
-
-      query = {
-        [parameterNames[this.index]]: argVal,
-      };
     }
-
-    Object.entries(query).forEach(entry =>
-      context.url.searchParams.set(entry[0], entry[1])
-    );
   }
 }
 const Query = MethodQueryDecorator.decorate;
