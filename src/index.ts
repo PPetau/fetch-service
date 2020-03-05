@@ -12,6 +12,8 @@ export {
   Post,
   Put,
   Header,
+  Middleware,
+  ApiMiddleware,
 } from './decorators';
 export { Template } from './type/Template';
 export { Api } from './api';
