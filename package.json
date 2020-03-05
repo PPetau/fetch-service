@@ -13,7 +13,9 @@
     "lint": "tsdx lint",
     "prepare": "tsdx build"
   },
-  "peerDependencies": {},
+  "peerDependencies": {
+    "class-transformer": "^0.2.3"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "tsdx lint"
@@ -38,9 +40,8 @@
     "reflect-metadata": "^0.1.13",
     "tsdx": "^0.12.3",
     "tslib": "^1.10.0",
-    "typescript": "^3.7.5"
-  },
-  "dependencies": {
+    "typescript": "^3.7.5",
     "class-transformer": "^0.2.3"
-  }
+  },
+  "dependencies": {}
 }
