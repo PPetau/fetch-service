@@ -1,6 +1,7 @@
 import { Decorator, EvaluationContext } from '../type/Decorator';
 import { GetArguments } from '../type';
 import { Api } from '../api';
+import { serialize } from 'class-transformer';
 
 export class MethodParameterDecorator extends Decorator {
   public static KEY = Symbol('api:method:param');
@@ -42,7 +43,14 @@ export class MethodParameterDecorator extends Decorator {
   public evaluate<TApi extends Api>(
     context: EvaluationContext<TApi>
   ): [string, string] {
-    return [this.parameterName, context.args[this.index]];
+    const val = context.args[this.index];
+
+    if (typeof val === 'string') return [this.parameterName, val];
+    else if (typeof val === 'object' && val !== null) {
+      return [this.parameterName, serialize(val)];
+    } else {
+      return [this.parameterName, ''];
+    }
   }
 }
 
