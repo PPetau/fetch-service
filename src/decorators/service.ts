@@ -1,5 +1,4 @@
 import { Decorator, EvaluationContext } from '../type/Decorator';
-import { Api } from '../api';
 import { TemplateReplacer } from 'src/type/Template';
 
 export class ServiceDecorator extends Decorator {
@@ -19,7 +18,7 @@ export class ServiceDecorator extends Decorator {
     super();
   }
 
-  public evaluate<TApi extends Api>(context: EvaluationContext<TApi>): void {
+  public evaluate(context: EvaluationContext): void {
     context.url = new URL(
       TemplateReplacer.replaceString(this.host, {
         target: context.target,

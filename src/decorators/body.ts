@@ -1,6 +1,5 @@
 import { serialize } from 'class-transformer';
 import { Decorator, EvaluationContext } from '../type/Decorator';
-import { Api } from '../api';
 
 export class MethodBodyDecorator extends Decorator {
   public static KEY = Symbol('api:method:query');
@@ -34,7 +33,7 @@ export class MethodBodyDecorator extends Decorator {
     super();
   }
 
-  public evaluate<TApi extends Api>(context: EvaluationContext<TApi>): void {
+  public evaluate(context: EvaluationContext): void {
     const argVal = context.args[this.index];
 
     if (typeof argVal === 'object') {

@@ -1,5 +1,4 @@
 import { EvaluationContext } from '../type/Decorator';
-import { Api } from '../api';
 
 export class HeadersDecorator {
   public static KEY = Symbol('api:service:headers');
@@ -27,7 +26,7 @@ export class HeadersDecorator {
 
   protected constructor(private headers: Record<string, string>) {}
 
-  public evaluate<TApi extends Api>(context: EvaluationContext<TApi>): void {
+  public evaluate(context: EvaluationContext): void {
     if (typeof context.request.headers === 'undefined')
       context.request.headers = this.headers;
     else {

@@ -1,5 +1,4 @@
 import { Decorator, EvaluationContext } from '../type/Decorator';
-import { Api } from '../api';
 import { UrlTemplate, Template } from '../type/Template';
 import { MethodParameterDecorator } from './parameter';
 
@@ -31,7 +30,7 @@ class RequestMethodDecorator extends Decorator {
     super();
   }
 
-  public evaluate<TApi extends Api>(context: EvaluationContext<TApi>): void {
+  public evaluate(context: EvaluationContext): void {
     const parameters = (
       (Reflect.getMetadata(
         MethodParameterDecorator.KEY,

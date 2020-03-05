@@ -17,11 +17,11 @@ type DecoratorType =
   | MethodDecorator
   | ParameterDecorator;
 
-export class EvaluationContext<TApi extends Api> {
+export class EvaluationContext {
   public request: RequestInit;
   public url!: URL;
 
-  public readonly target: TApi;
+  public readonly target: Api;
 
   public readonly args: unknown[];
 
@@ -46,7 +46,5 @@ export abstract class Decorator {
     throw new Error('Decorate is not implemented!');
   };
 
-  public abstract evaluate<TApi extends Api>(
-    context: EvaluationContext<TApi>
-  ): void;
+  public abstract evaluate(context: EvaluationContext): void;
 }

@@ -1,6 +1,5 @@
 import { Decorator, EvaluationContext } from '../type/Decorator';
 import { GetArguments } from '../type';
-import { Api } from '../api';
 
 export class MethodQueryDecorator extends Decorator {
   public static KEY = Symbol('api:method:query');
@@ -36,7 +35,7 @@ export class MethodQueryDecorator extends Decorator {
     super();
   }
 
-  public evaluate<TApi extends Api>(context: EvaluationContext<TApi>): void {
+  public evaluate(context: EvaluationContext): void {
     const value = context.args[this.index];
 
     if (typeof value === 'string') {
