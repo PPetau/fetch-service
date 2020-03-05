@@ -1,11 +1,13 @@
 import { Decorator, EvaluationContext } from '../type/Decorator';
-import { TemplateReplacer } from 'src/type/Template';
+import { TemplateReplacer } from '../type/Template';
 
 export class ServiceDecorator extends Decorator {
   public static KEY = Symbol('api:service');
 
-  public static decorate(host: string): ClassDecorator {
+  public static decorate(host?: string): ClassDecorator {
     return (target): void => {
+      if (!host) host = '[BASE]/[SERVICE]';
+
       Reflect.defineMetadata(
         ServiceDecorator.KEY,
         new ServiceDecorator(host),
