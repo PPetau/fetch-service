@@ -36,25 +36,24 @@ export class MethodBodyDecorator extends Decorator {
 
   public evaluate<TApi extends Api>(context: EvaluationContext<TApi>): void {
     const argVal = context.args[this.index];
-    let bodyVal: string | null = null;
 
     if (typeof argVal === 'object') {
-      if (typeof context.request.headers === 'object') {
-        context.request.headers = {
-          ...context.request.headers,
-          'Content-Type': 'application/json',
-        };
-      } else {
-        context.request.headers = {
-          'Content-Type': 'application/json',
-        };
-      }
-      bodyVal = serialize(argVal);
-    } else {
-      bodyVal = argVal;
-    }
+      context.request.headers = {
+        ...(context.request.headers ?? {}),
+        'Content-Type': 'application/json',
+      };
 
-    context.request.body = bodyVal;
+      context.request.body = serialize(argVal);
+    } else if (argVal) {
+      context.request.headers = {
+        ...(context.request.headers ?? {}),
+        'Content-Type': 'text/plain',
+      };
+
+      context.request.body = JSON.stringify(argVal);
+    } else {
+      context.request.body = undefined;
+    }
   }
 }
 const Body = MethodBodyDecorator.decorate;
