@@ -6,8 +6,7 @@ export class HeadersDecorator {
   public static decorate(
     headers: Record<string, string>
   ): ClassDecorator | PropertyDecorator {
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    return (target: Object, propertyKey?: string): void => {
+    return (target: object, propertyKey?: string): void => {
       if (typeof propertyKey === 'undefined')
         Reflect.defineMetadata(
           HeadersDecorator.KEY,
@@ -27,14 +26,10 @@ export class HeadersDecorator {
   protected constructor(private headers: Record<string, string>) {}
 
   public evaluate(context: EvaluationContext): void {
-    if (typeof context.request.headers === 'undefined')
-      context.request.headers = this.headers;
-    else {
-      context.request.headers = {
-        ...context.request.headers,
-        ...this.headers,
-      };
-    }
+    context.request.headers = {
+      ...(context.request.headers ?? {}),
+      ...this.headers,
+    };
   }
 }
 
