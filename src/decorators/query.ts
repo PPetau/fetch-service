@@ -47,6 +47,14 @@ export class MethodQueryDecorator extends Decorator {
     }
   }
 }
+
+/**
+ * Makes this argument a value of the request searchParams
+ * If value is of type string it will be used with the given name of the argument
+ * When value is of type object all keys will be used as a queryparameter
+ *
+ * @param name - an optional name that will override the argumentname
+ */
 const Query = MethodQueryDecorator.decorate;
 
 export { Query };

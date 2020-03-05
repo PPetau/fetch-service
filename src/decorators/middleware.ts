@@ -47,6 +47,10 @@ export class MiddlewareDecorator extends Decorator {
   }
 }
 
+/**
+ * Tells the executor to execute all middlewares that are provided
+ * @param middlewares - The Middlewares that should be used for this method
+ */
 const Middleware = MiddlewareDecorator.decorate;
 
 export { Middleware };

@@ -48,24 +48,49 @@ class RequestMethodDecorator extends Decorator {
   }
 }
 
+/**
+ * Defines a function to execute a given request
+ * @param type The request method that the request should use
+ * @param template Template that this request should use. When not provided uses '/[ACTION]'.
+ */
 const Method = RequestMethodDecorator.decorate;
 
+/**
+ * Defines this function to execute a `GET` request
+ * @param template Template that this request should use. When not provided uses the name of the decorated Method.
+ */
 function Get(template?: UrlTemplate): ReturnType<typeof Method> {
   return Method('GET', template);
 }
 
+/**
+ * Defines this function to execute a `POST` request
+ * @param template Template that this request should use. When not provided uses the name of the decorated Method.
+ */
 function Post(template?: UrlTemplate): ReturnType<typeof Method> {
   return Method('POST', template);
 }
 
+/**
+ * Defines this function to execute a `PUT` request
+ * @param template Template that this request should use. When not provided uses the name of the decorated Method.
+ */
 function Put(template?: UrlTemplate): ReturnType<typeof Method> {
   return Method('PUT', template);
 }
 
+/**
+ * Defines this function to execute a `PATCH` request
+ * @param template Template that this request should use. When not provided uses the name of the decorated Method.
+ */
 function Patch(template?: UrlTemplate): ReturnType<typeof Method> {
   return Method('PATCH', template);
 }
 
+/**
+ * Defines this function to execute a `DELETE` request
+ * @param template Template that this request should use. When not provided uses the name of the decorated Method.
+ */
 function Delete(template?: UrlTemplate): ReturnType<typeof Method> {
   return Method('DELETE', template);
 }

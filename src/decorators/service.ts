@@ -30,6 +30,11 @@ export class ServiceDecorator extends Decorator {
   }
 }
 
+/**
+ * Decorates a class to be a Service
+ *
+ * @param host - The host this Service is attached to. When empty will use '[BASE]/[SERVICE]' as the Url
+ */
 const Service = ServiceDecorator.decorate;
 
 export { Service };

@@ -13,6 +13,12 @@ export interface Replacer {
   with: (ctx: TemplateContext) => string;
 }
 
+/**
+ * Utility to Register template definitions
+ *
+ * Usually a template starts with `[` and ends with `]`
+ * For replacement a context of the function is provided
+ */
 export const TemplateReplacer = new (class TemplateReplacer {
   public readonly replacers: Replacer[] = [];
 
@@ -56,6 +62,11 @@ export const TemplateReplacer = new (class TemplateReplacer {
   }
 })();
 
+/**
+ * Creates an URL template that will be used when building the url
+ *
+ * The Keys used inside the templatestring will be mapped against the Parameterlist of the function
+ */
 export function Template(
   stringsArray: TemplateStringsArray,
   ...keys: string[]

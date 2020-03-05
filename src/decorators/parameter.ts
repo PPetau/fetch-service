@@ -51,6 +51,11 @@ export class MethodParameterDecorator extends Decorator {
   }
 }
 
+/**
+ * Makes an argument of a function a parameter that is injected into the template that is provided
+ *
+ * @param parameterName - An optional name that overrides the argumentname
+ */
 const Param = MethodParameterDecorator.decorate;
 
 export { Param };

@@ -38,6 +38,11 @@ export class HeadersDecorator {
   }
 }
 
+/**
+ * Applies given Headers to the Request
+ *
+ * @param headers - Object with the Headers
+ */
 const Header = HeadersDecorator.decorate;
 
 export { Header };

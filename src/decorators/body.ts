@@ -55,6 +55,15 @@ export class MethodBodyDecorator extends Decorator {
     }
   }
 }
+
+/**
+ * Will be used as the Body of the request
+ *
+ * When value is an object it will be serialized by 'class-transformer'
+ * When value is string it will be used direclty as the body
+ *
+ * Content-Type will be set accordingly but can be orverwritten
+ */
 const Body = MethodBodyDecorator.decorate;
 
 export { Body };
