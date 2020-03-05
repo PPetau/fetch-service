@@ -1,7 +1,13 @@
 import { ResponseParser } from './type/ResponseParser';
 import { EvaluationContext, Decorator } from './type/Decorator';
+import { MethodParameterDecorator } from './decorators/parameter';
 
-const unwantedKeys = ['design:type', 'design:paramtypes', 'design:returntype'];
+const unwantedKeys = [
+  'design:type',
+  'design:paramtypes',
+  'design:returntype',
+  MethodParameterDecorator.KEY,
+];
 
 const ApiProxy: ProxyHandler<Api> = {
   get(target, propertyKey: string | symbol, receiver) {
@@ -17,8 +23,12 @@ const ApiProxy: ProxyHandler<Api> = {
     if (propertyMetadataKeys.length === 0)
       return Reflect.get(target, propertyKey, receiver);
 
-    return function(this: typeof target, ...args: any[]): Function {
-      const context = new EvaluationContext(target, propertyKey, args);
+    return function(this: typeof target, ...args: never[]): Function {
+      const context = new EvaluationContext(
+        target,
+        propertyKey.toString(),
+        args
+      );
 
       classMetadataKeys
         .map<Decorator>(k => Reflect.getMetadata(k, target.constructor))
@@ -26,9 +36,7 @@ const ApiProxy: ProxyHandler<Api> = {
 
       propertyMetadataKeys
         .map<Decorator>(k => Reflect.getMetadata(k, target, propertyKey))
-        .forEach(d => {
-          if (!Array.isArray(d)) d.evaluate(context);
-        });
+        .forEach(d => d.evaluate(context));
 
       console.log(context);
 

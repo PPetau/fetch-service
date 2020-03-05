@@ -3,7 +3,7 @@ import { Api } from '../api';
 import { UrlTemplate } from '../type/Template';
 import { MethodParameterDecorator } from './parameter';
 
-type RequestType = 'GET';
+type RequestType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
 class RequestMethodDecorator extends Decorator {
   public static KEY = Symbol('api:service');
@@ -46,4 +46,24 @@ class RequestMethodDecorator extends Decorator {
 
 const Method = RequestMethodDecorator.decorate;
 
-export { Method };
+function Get(template: UrlTemplate): ReturnType<typeof Method> {
+  return Method('GET', template);
+}
+
+function Post(template: UrlTemplate): ReturnType<typeof Method> {
+  return Method('POST', template);
+}
+
+function Put(template: UrlTemplate): ReturnType<typeof Method> {
+  return Method('PUT', template);
+}
+
+function Patch(template: UrlTemplate): ReturnType<typeof Method> {
+  return Method('PATCH', template);
+}
+
+function Delete(template: UrlTemplate): ReturnType<typeof Method> {
+  return Method('DELETE', template);
+}
+
+export { Method, Get, Post, Put, Patch, Delete };

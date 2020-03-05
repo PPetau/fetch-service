@@ -1,9 +1,11 @@
 import { Api } from '../api';
 
-export type ClassDecoratorFactory = (...args: any[]) => ClassDecorator;
-export type PropertyDecoratorFactory = (...args: any[]) => PropertyDecorator;
-export type MethodDecoratorFactory = (...args: any[]) => MethodDecorator;
-export type ParameterDecoratorFactory = (...args: any[]) => ParameterDecorator;
+export type ClassDecoratorFactory = (...args: never[]) => ClassDecorator;
+export type PropertyDecoratorFactory = (...args: never[]) => PropertyDecorator;
+export type MethodDecoratorFactory = (...args: never[]) => MethodDecorator;
+export type ParameterDecoratorFactory = (
+  ...args: never[]
+) => ParameterDecorator;
 
 type DecoratorType =
   | ClassDecoratorFactory
@@ -21,11 +23,11 @@ export class EvaluationContext<TApi extends Api> {
 
   public readonly target: TApi;
 
-  public readonly args: any[];
+  public readonly args: unknown[];
 
-  public readonly propertyKey: string | symbol;
+  public readonly propertyKey: string;
 
-  public constructor(target: TApi, propertyKey: string | symbol, args: any[]) {
+  public constructor(target: TApi, propertyKey: string, args: unknown[]) {
     this.request = {};
     this.target = target;
     this.args = args;

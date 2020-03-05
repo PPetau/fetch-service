@@ -1,5 +1,4 @@
 {
-  "include": ["src", "test", "types"],
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",

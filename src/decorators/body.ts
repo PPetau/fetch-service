@@ -1,8 +1,8 @@
+import { serialize } from 'class-transformer';
 import { Decorator, EvaluationContext } from '../type/Decorator';
-import { GetArguments } from '../type';
 import { Api } from '../api';
 
-export class MethodQueryDecorator extends Decorator {
+export class MethodBodyDecorator extends Decorator {
   public static KEY = Symbol('api:method:query');
 
   public static decorate(): ParameterDecorator {
@@ -10,15 +10,15 @@ export class MethodQueryDecorator extends Decorator {
       const func = Object.getOwnPropertyDescriptor(target, key)?.value;
 
       if (typeof func === 'function') {
-        if (Reflect.hasMetadata(MethodQueryDecorator.KEY, target, key)) {
+        if (Reflect.hasMetadata(MethodBodyDecorator.KEY, target, key)) {
           throw Error(
             'Using more than one Query. Only on Queryparameter is allowed per Method.'
           );
         }
 
         Reflect.defineMetadata(
-          MethodQueryDecorator.KEY,
-          new MethodQueryDecorator(index),
+          MethodBodyDecorator.KEY,
+          new MethodBodyDecorator(index),
           target,
           key
         );
@@ -36,32 +36,27 @@ export class MethodQueryDecorator extends Decorator {
 
   public evaluate<TApi extends Api>(context: EvaluationContext<TApi>): void {
     const argVal = context.args[this.index];
-    let query: Record<string, string> = {};
+    let bodyVal: string | null = null;
 
     if (typeof argVal === 'object') {
-      Object.keys(argVal).forEach(key => {
-        if (typeof argVal[key] === 'object') {
-          argVal[key] = JSON.stringify(argVal[key]);
-        }
-      });
-
-      query = argVal;
-    } else if (typeof argVal !== 'undefined') {
-      const parameterNames = GetArguments(
-        Object.getOwnPropertyDescriptor(context.target, context.propertyKey)
-          ?.value
-      );
-
-      query = {
-        [parameterNames[this.index]]: argVal,
-      };
+      if (typeof context.request.headers === 'object') {
+        context.request.headers = {
+          ...context.request.headers,
+          'Content-Type': 'application/json',
+        };
+      } else {
+        context.request.headers = {
+          'Content-Type': 'application/json',
+        };
+      }
+      bodyVal = serialize(argVal);
+    } else {
+      bodyVal = argVal;
     }
 
-    Object.entries(query).forEach(entry =>
-      context.url.searchParams.set(entry[0], entry[1])
-    );
+    context.request.body = bodyVal;
   }
 }
-const Query = MethodQueryDecorator.decorate;
+const Body = MethodBodyDecorator.decorate;
 
-export { Query };
+export { Body };

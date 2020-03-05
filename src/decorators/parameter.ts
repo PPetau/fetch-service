@@ -41,7 +41,7 @@ export class MethodParameterDecorator extends Decorator {
 
   public evaluate<TApi extends Api>(
     context: EvaluationContext<TApi>
-  ): [string, any] {
+  ): [string, string] {
     return [this.parameterName, context.args[this.index]];
   }
 }
