@@ -3,9 +3,7 @@ import { EvaluationContext } from '../type/Decorator';
 export class HeadersDecorator {
   public static KEY = Symbol('api:service:headers');
 
-  public static decorate(
-    headers: Record<string, string>
-  ): ClassDecorator | PropertyDecorator {
+  public static decorate(headers: Record<string, string>) {
     return (target: object, propertyKey?: string): void => {
       if (typeof propertyKey === 'undefined') {
         const other: HeadersDecorator[] =
