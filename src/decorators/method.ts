@@ -12,7 +12,7 @@ class RequestMethodDecorator extends Decorator {
     template?: UrlTemplate
   ): MethodDecorator {
     return (target, key): void => {
-      if (!template) template = Template`[SERVICE]/[ACTION]`;
+      if (!template) template = Template`/[ACTION]`;
 
       Reflect.defineMetadata(
         RequestMethodDecorator.KEY,
@@ -39,7 +39,7 @@ class RequestMethodDecorator extends Decorator {
       ) as MethodParameterDecorator[]) ?? []
     ).map(p => p.evaluate(context));
 
-    context.url.pathname = this.template(Object.fromEntries(parameters), {
+    context.url.pathname += this.template(Object.fromEntries(parameters), {
       target: context.target,
       key: context.propertyKey,
     });
