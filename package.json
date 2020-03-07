@@ -27,7 +27,7 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "@wf/fetch-service",
+  "name": "fetch-service-decorators",
   "author": "PPetau",
   "module": "dist/fetch-service.esm.js",
   "devDependencies": {
