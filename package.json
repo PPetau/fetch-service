@@ -27,7 +27,11 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "fetch-service-decorators",
+  "name": "fetch-service",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "repository": "git://github.com/PPetau/fetch-service.git",
   "author": "PPetau",
   "module": "dist/fetch-service.esm.js",
   "devDependencies": {
