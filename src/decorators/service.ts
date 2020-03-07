@@ -25,7 +25,8 @@ export class ServiceDecorator extends Decorator {
       TemplateReplacer.replaceString(this.host, {
         target: context.target,
         key: context.propertyKey,
-      })
+      }),
+      window.location.href
     );
   }
 }
