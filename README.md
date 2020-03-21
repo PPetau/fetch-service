@@ -6,9 +6,10 @@ The goal was to create a System that allows the Developer to create Services tha
 
 ### Installation
 
-```sh
-$ yarn add @ws/fetch-service
-```
+Currently there is no package available.
+
+1. clone repo.
+2. install deps: ´yarn`or`npm install`
 
 ## Usage
 
